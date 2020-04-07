@@ -13,7 +13,7 @@ from PyQt5.QtWebEngineWidgets import QWebEngineView
 class Ui_mainForm(object):
     def setupUi(self, mainForm):
         mainForm.setObjectName("mainForm")
-        mainForm.resize(1000, 800)
+        mainForm.resize(1200, 880)
         self.gridLayout_2 = QtWidgets.QGridLayout(mainForm)
         self.gridLayout_2.setContentsMargins(0, 0, 0, 0)
         self.gridLayout_2.setSpacing(0)
