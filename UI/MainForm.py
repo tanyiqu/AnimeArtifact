@@ -8,7 +8,7 @@ from PyQt5.QtCore import QUrl
 from PyQt5.QtGui import QTextCursor
 
 import R
-from Utils import TextUtil, CrawlUtil
+from Utils import TextUtil, CrawlUtil, VideoUtil
 from UI.UI_MainForm import Ui_mainForm
 
 
@@ -25,6 +25,8 @@ class MainForm(Ui_mainForm):
     episodePath = '/acg/2130/'    # 番剧编号
     jsSrc = ''              # 番剧js源码
     jsonLinkDir = {}        # 字典：{第几集 : json文件链接}
+    already = False
+    isBack = False
 
     def init(self):
         self.simpleLog(R.string.WELCOME)
@@ -83,6 +85,11 @@ class MainForm(Ui_mainForm):
         pass
 
     def url_changed(self):
+        # 如果是返回来的话直接不处理了
+        if self.isBack:
+            print('返回操作，不处理')
+            self.isBack = False
+            return
         currUrl = TextUtil.QUrl_2_str(self.browser.url())
         self.urlBar.setText(currUrl)
         if currUrl == R.string.HOME_URL:
@@ -99,14 +106,24 @@ class MainForm(Ui_mainForm):
         reg1 = r'http://.*?/.*?/([1-9]\d*)/$'           # 匹配第一种
         reg2 = r'http://.*?/.*?/[1-9]\d*/(.*?).html$'   # 匹配第二种
         if re.match(reg1, currUrl):
+            # 每当进入此类链接，already置为False
+            self.already = False
             # 开启线程执行
             t = threading.Thread(target=self.do_reg1, name='', args=(currUrl,))
             t.start()
             return
         if re.match(reg2, currUrl):
-            # 开启线程执行
-            t = threading.Thread(target=self.do_reg2, name='')
-            t.start()
+            # 判断是否完成获取
+            if self.already:
+                # 开启线程执行
+                t = threading.Thread(target=self.do_reg2, name='', args=(currUrl,))
+                t.start()
+                pass
+            else:
+                self.safeLog('现在还未获取完成！')
+                pass
+            self.isBack = True
+            self.browser.back()
             pass
         pass
 
@@ -117,6 +134,7 @@ class MainForm(Ui_mainForm):
         :param url: 番剧的链接
         :return: None
         """
+
         self.safeLog('进入链接：{}'.format(url))
         self.safeLog('正在获取此番剧信息... 请耐心等待获取信息完毕后再点击观看！')
         self.safeLog('......')
@@ -125,6 +143,7 @@ class MainForm(Ui_mainForm):
         # print(self.HtmlSrc)
         # 获取番名
         self.episodeName = CrawlUtil.getEpisodeName(self.HtmlSrc)
+        print(self.episodeName)
         self.safeLog('正在访问：【{}】'.format(self.episodeName))
         # 获取番剧路径
         self.episodePath = CrawlUtil.getEpisodePath(url)
@@ -139,7 +158,6 @@ class MainForm(Ui_mainForm):
         # 如果集数过多，就打印进度信息
         if self.episodeNum > 20:
             self.safeLog('当前番剧集数过多！请耐心等待！')
-
             pass
 
         # 获取改番剧js文件的源码，后期找每一集的链接用
@@ -152,10 +170,24 @@ class MainForm(Ui_mainForm):
         # self.safeLog('正在访问：【{}】 总集数：{}'.format(self.episodeName, self.episodeNum))
         self.safeLog('【提示】可以爬取此页面所有下载链接！！请点击【抓取链接】按钮进行此操作！！')
         self.safeLog('获取完毕!')
+        self.already = True
         pass
 
-    def do_reg2(self):
-        print(self.episodeNum)
+    def do_reg2(self, url):
+        # 点击的是第几集
+        reg = r'http://.*?/.*?/[1-9]\d*/(.*?).html$'
+        num = int(re.findall(reg, url)[0])
+        self.safeLog('正在播放【{}】'.format(self.episodeDir[num]))
+        self.safeLog('【播放】%s ： %s' % (self.episodeName, self.episodeDir[num]))
+        self.safeLog('原播放链接为：' + url)
+        # 查找存放这一集播放链接的json文件的链接
+        # print('第%d集' % num)
+        jsonLink = self.jsonLinkDir[num]
+        # 直接调用potplayer播放
+        # lk = 'C:/Users/John/Desktop/我的重装机兵/10_炸楼任务.mp4'
+        lk = CrawlUtil.getPlayLink(jsonLink)
+        self.safeLog('真实视频播放链接：' + lk)
+        VideoUtil.play(lk)
         pass
 
     def btnCopyLink_clicked(self):
