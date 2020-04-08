@@ -15,3 +15,5 @@ class string:
 """ % APP_NAME
 
     TIPS = '【提示】请各位看番人操作不要太迅速！'
+
+    OPEN_SOURCE = 'https://github.com/Tanyiqu/AnimeArtifact'

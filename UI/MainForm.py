@@ -39,9 +39,11 @@ class MainForm(Ui_mainForm):
         # 复制链接
         self.btnCopyLink.clicked.connect(self.btnCopyLink_clicked)
         # 回到主页
-        self.btnHome.clicked.connect(self.btnHome_clicked)
+        self.btnHome.clicked.connect(lambda: self.browser.load(QUrl(R.string.HOME_URL)))
         # 返回按钮
-        self.btnBack.clicked.connect(self.btnBack_clicked)
+        self.btnBack.clicked.connect(lambda: self.browser.back())
+        # 项目地址
+        self.btnOpenSource.clicked.connect(lambda: webbrowser.open_new(R.string.OPEN_SOURCE))
         pass
 
     def log(self, msg, showTime=True):
@@ -174,7 +176,6 @@ class MainForm(Ui_mainForm):
         # self.safeLog('正在访问：【{}】 总集数：{}'.format(self.episodeName, self.episodeNum))
         self.safeLog('【提示】可以爬取此页面所有下载链接！！请点击【抓取链接】按钮进行此操作！！')
         self.safeLog('番剧获取完毕!')
-
         self.already = True
         pass
 
@@ -184,6 +185,8 @@ class MainForm(Ui_mainForm):
         num = int(re.findall(reg, url)[0])
         # self.safeLog('正在播放【{}】'.format(self.episodeDir[num]))
         self.safeLog('【正在播放】「{}」 「{}」'.format(self.episodeName, self.episodeDir[num]), showTime=False)
+        self.lblLastPlayEpisodeName.setText(self.episodeName)
+        self.lblLastPlayEpisodeNum.setText(self.episodeDir[num])
         self.safeLog('原播放链接为：' + url, showTime=False)
         # 查找存放这一集播放链接的json文件的链接
         # print('第%d集' % num)
@@ -209,12 +212,4 @@ class MainForm(Ui_mainForm):
         wc.EmptyClipboard()
         wc.SetClipboardData(win32con.CF_UNICODETEXT, url)
         wc.CloseClipboard()
-        pass
-
-    def btnHome_clicked(self):
-        self.browser.load(QUrl(R.string.HOME_URL))
-        pass
-
-    def btnBack_clicked(self):
-        self.browser.back()
         pass
