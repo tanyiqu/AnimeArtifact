@@ -97,28 +97,40 @@ def getJsSrc(url):
 def getJsonLinkDir(jsSrc, num):
     """
     拼接存有播放链接的json文件的链接，返回{第几集:json链接}
+    此操作最耗时，最好能有提示信息
     :param jsSrc: js源码
     :param num:  集数
     :return: 字典 {第几集:json链接}
     """
     jsonLinkDir = {}
+    # print(num)
+    # print('jsSrc:', jsSrc)
     # 依次拼接链接
     for i in range(1, num + 1):
-        reg1 = r'playarr.*?\[%d\]="(.*?),' % i  # 原来的正则，尝试匹配
-        # playarr_1[1] = "1006_61136653f7514b4d9f5c8e828067dbbb,
-        # reg2 = r'playarr.*?\[%d\]="(\S{37}),' % i
-        # 先用reg2尝试匹配，如果reg2没有匹配成功，就换reg1匹配
-        # temp = re.search(reg2, jsSrc)
-        # if temp:
-        #     suffix = re.findall(reg2, jsSrc)[0]
-        # else:
-        #     suffix = re.findall(reg1, jsSrc)[0]
-
-        suffix = re.findall(reg1, jsSrc)[0]
-        # print(suffix)
+        print('第', i, '次')
+        reg = r'\[%d\]="(.*?),' % i
+        # print('reg:', reg2)
+        # 匹配所有后缀
+        suffixes = re.findall(reg, jsSrc)
+        print(suffixes)
+        # 优先用这种形式的后缀
+        # 1. '1097_5382ce5f262e4ddbaab3c61fa73cdbbb'
+        # 2. 'http://www.iqiyi.com/v_19rrfezjdw.html
+        # 3. 其他
+        # 4. 无后缀
+        suffix = ''
+        if len(suffixes) == 0:
+            jsonLinkDir.update({i: ''})
+            continue
+        for s in suffixes:
+            if len(s) == 37 and s[4] == '_':
+                suffix = s
+                break
+        if suffix == '':
+            suffix = suffixes[0]
 
         jsonLink = 'http://test.1yltao.com/testapi888.php?time={}&url={}'.format(int(time.time()), suffix)
-        # print(jsonLink)
+        # print(i, jsonLink)
         jsonLinkDir.update({i: jsonLink})
     return jsonLinkDir
 

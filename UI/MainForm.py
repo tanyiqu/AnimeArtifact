@@ -134,12 +134,14 @@ class MainForm(Ui_mainForm):
         :param url: 番剧的链接
         :return: None
         """
-
         self.safeLog('进入链接：{}'.format(url))
         self.safeLog('正在获取此番剧信息... 请耐心等待获取信息完毕后再点击观看！')
         self.safeLog('......')
         # 下载源码
+        self.safeLog('下载Html源码...')
+        time.sleep(1)
         self.HtmlSrc = CrawlUtil.getHtmlSrc(url)
+        self.safeLog('成功！')
         # print(self.HtmlSrc)
         # 获取番名
         self.episodeName = CrawlUtil.getEpisodeName(self.HtmlSrc)
