@@ -161,15 +161,19 @@ class MainForm(Ui_mainForm):
             pass
 
         # 获取改番剧js文件的源码，后期找每一集的链接用
+        self.safeLog('正在获取js文件...')
         self.jsSrc = CrawlUtil.getJsSrc(url)
+        self.safeLog('获取js文件成功！')
         # print(self.jsSrc)
         # 获取 {集数:每一集的json文件}字典
+        self.safeLog('正在整合每一集的播放链接...')
         self.jsonLinkDir = CrawlUtil.getJsonLinkDir(self.jsSrc, self.episodeNum)
+        self.safeLog('成功！')
         # print(self.jsonLinkDir)
         # self.safeLog('获取完毕：')
         # self.safeLog('正在访问：【{}】 总集数：{}'.format(self.episodeName, self.episodeNum))
         self.safeLog('【提示】可以爬取此页面所有下载链接！！请点击【抓取链接】按钮进行此操作！！')
-        self.safeLog('获取完毕!')
+        self.safeLog('番剧获取完毕!')
         self.already = True
         pass
 
@@ -177,8 +181,8 @@ class MainForm(Ui_mainForm):
         # 点击的是第几集
         reg = r'http://.*?/.*?/[1-9]\d*/(.*?).html$'
         num = int(re.findall(reg, url)[0])
-        self.safeLog('正在播放【{}】'.format(self.episodeDir[num]))
-        self.safeLog('【播放】%s ： %s' % (self.episodeName, self.episodeDir[num]))
+        # self.safeLog('正在播放【{}】'.format(self.episodeDir[num]))
+        self.safeLog('【正在播放】「{}」 「{}」'.format(self.episodeName, self.episodeDir[num]))
         self.safeLog('原播放链接为：' + url)
         # 查找存放这一集播放链接的json文件的链接
         # print('第%d集' % num)
