@@ -1,5 +1,6 @@
 import threading
 import time
+import webbrowser
 
 import win32con
 import win32clipboard as wc
@@ -29,8 +30,8 @@ class MainForm(Ui_mainForm):
     isBack = False
 
     def init(self):
-        self.simpleLog(R.string.WELCOME)
-        self.simpleLog(R.string.TIPS)
+        self.log(R.string.WELCOME, showTime=False)
+        self.log(R.string.TIPS, showTime=False)
         # web
         self.browser.load(QUrl(R.string.HOME_URL))
         self.browser.urlChanged.connect(self.url_changed)
@@ -42,40 +43,30 @@ class MainForm(Ui_mainForm):
         self.btnBack.clicked.connect(self.btnBack_clicked)
         pass
 
-    def log(self, msg):
+    def log(self, msg, showTime=True):
         """
         在主console打印含有时间信息的日志
         :param msg: 信息
+        :param showTime: 是否显示时间
         :return: None
         """
         msg = msg.strip()
         # 获取时间
-        t = time.strftime('%H:%M:%S', time.localtime())
-        self.console_main.append(t + ' ' + msg)
-        cursor = self.console_main.textCursor()
-        cursor.movePosition(QTextCursor.End)
-        self.console_main.setTextCursor(cursor)
-        pass
-
-    def simpleLog(self, msg):
-        """
-        在主console打印没有时间信息的日志
-        :param msg: 信息
-        :return: None
-        """
-        msg = msg.strip()
+        if showTime:
+            t = time.strftime('%H:%M:%S', time.localtime())
+            msg = t + ' ' + msg
         self.console_main.append(msg)
         cursor = self.console_main.textCursor()
         cursor.movePosition(QTextCursor.End)
         self.console_main.setTextCursor(cursor)
         pass
 
-    def safeLog(self, msg):
+    def safeLog(self, msg, showTime=True):
         # 在副console打印含有时间信息的日志
-        # msg = msg.strip()
         # 获取时间
-        t = time.strftime('%H:%M:%S', time.localtime())
-        msg = t + ' ' + msg
+        if showTime:
+            t = time.strftime('%H:%M:%S', time.localtime())
+            msg = t + ' ' + msg
         # 使用append追加可能某一行不显示的bug
         self.console_secondary.append(msg)
         # print(msg)
@@ -184,15 +175,23 @@ class MainForm(Ui_mainForm):
         reg = r'http://.*?/.*?/[1-9]\d*/(.*?).html$'
         num = int(re.findall(reg, url)[0])
         # self.safeLog('正在播放【{}】'.format(self.episodeDir[num]))
-        self.safeLog('【正在播放】「{}」 「{}」'.format(self.episodeName, self.episodeDir[num]))
-        self.safeLog('原播放链接为：' + url)
+        self.safeLog('【正在播放】「{}」 「{}」'.format(self.episodeName, self.episodeDir[num]), showTime=False)
+        self.safeLog('原播放链接为：' + url, showTime=False)
         # 查找存放这一集播放链接的json文件的链接
         # print('第%d集' % num)
         jsonLink = self.jsonLinkDir[num]
         # 直接调用potplayer播放
         # lk = 'C:/Users/John/Desktop/我的重装机兵/10_炸楼任务.mp4'
         lk = CrawlUtil.getPlayLink(jsonLink)
-        self.safeLog('真实视频播放链接：' + lk)
+        self.safeLog('真实视频播放链接：' + lk, showTime=False)
+        # 先暂时阻止m3u8视频链接，以后处理
+        if lk[-5:].lower() == '.m3u8':
+            self.safeLog('暂时不播放m3u8视频，以后会进行适配！！', showTime=False)
+            self.safeLog('暂时先在浏览器中凑活着看！！', showTime=False)
+            broswerLk = 'https://www.m3u8play.com/?play={}'.format(lk)
+            print(broswerLk)
+            webbrowser.open_new(broswerLk)
+            return
         VideoUtil.play(lk)
         pass
 

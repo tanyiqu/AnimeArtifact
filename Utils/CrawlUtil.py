@@ -118,12 +118,15 @@ def getJsonLinkDir(jsSrc, num):
         # 2. 'https://gss3.baidu.com/6LZ0ej3k1Qd3ote6lo7D0j9wehsv/tieba-smallvideo/34_31fead7c2286d7eae4de89bfd9326f7b.mp4'
         # 3. 'http://www.iqiyi.com/v_19rrfezjdw.html
         # 4. 'xxxxx.m3u8'
+        #   #  这个链接不太好，因为有视频没有声音：https://www6.yuboyun.com/hls/2019/08/04/ZTKm6RXU/playlist.m3u8，先不处理它
+        #   #
         # 5. 无后缀
         suffix = ''
         if len(suffixes) == 0:
             print('取：空')
             jsonLinkDir.update({i: ''})
             continue
+        # 筛选高优先级的
         for s in suffixes:
             # 如果是第一种：37位并且中间有个‘_’
             if len(s) == 37 and s[4] == '_':
@@ -131,14 +134,27 @@ def getJsonLinkDir(jsSrc, num):
                 print('取：', s)
                 break
             # 第二种：结尾是“.mp4”
-            elif s[-4:] == '.mp4':
+            elif s[-4:].lower() == '.mp4':
                 suffix = s
                 print('取：', s)
                 break
+            # 第三种：.html的，这种可以看但是不能缓存
+            elif s[-5:].lower() == '.html':
+                suffix = s
+                print('取：', s)
+                break
+        # 筛选m3u8的
+        for s in suffixes:
+            # 剔除不太好的m3u8链接
+            if s[0:13] == 'https://www6.' or s[0:12] == 'http://www6.':
+                continue
+            suffix = s
+            print('取：', s)
+            break
+        # 如果还有其他的，就取默认的吧
         if suffix == '':
             suffix = suffixes[0]
             print('取：', suffixes[0])
-
         jsonLink = 'http://test.1yltao.com/testapi888.php?time={}&url={}'.format(int(time.time()), suffix)
         # print(i, jsonLink)
         jsonLinkDir.update({i: jsonLink})
