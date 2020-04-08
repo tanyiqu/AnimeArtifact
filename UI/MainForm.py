@@ -42,6 +42,8 @@ class MainForm(Ui_mainForm):
         self.btnHome.clicked.connect(lambda: self.browser.load(QUrl(R.string.HOME_URL)))
         # 返回按钮
         self.btnBack.clicked.connect(lambda: self.browser.back())
+        # 抓取链接
+        self.btnGetAllLinks.clicked.connect(self.btnGetAllLinks_clicked)
         # 项目地址
         self.btnOpenSource.clicked.connect(lambda: webbrowser.open_new(R.string.OPEN_SOURCE))
         pass
@@ -90,6 +92,7 @@ class MainForm(Ui_mainForm):
             print('返回操作，不处理')
             self.isBack = False
             return
+        self.btnGetAllLinks.setEnabled(False)
         currUrl = TextUtil.QUrl_2_str(self.browser.url())
         self.urlBar.setText(currUrl)
         if currUrl == R.string.HOME_URL:
@@ -177,6 +180,7 @@ class MainForm(Ui_mainForm):
         self.safeLog('【提示】可以爬取此页面所有下载链接！！请点击【抓取链接】按钮进行此操作！！')
         self.safeLog('番剧获取完毕!')
         self.already = True
+        self.btnGetAllLinks.setEnabled(True)
         pass
 
     def do_reg2(self, url):
@@ -212,4 +216,32 @@ class MainForm(Ui_mainForm):
         wc.EmptyClipboard()
         wc.SetClipboardData(win32con.CF_UNICODETEXT, url)
         wc.CloseClipboard()
+        pass
+
+    def btnGetAllLinks_clicked(self):
+        t = threading.Thread(target=self._getAllLinks, name='getAllLinks')
+        t.start()
+        pass
+
+    def _getAllLinks(self):
+        # 抓取所有链接（如果是m3u8链接那也没有办法）
+        self.safeLog('抓取所有链接...')
+        # 获取桌面路径
+        desktop = TextUtil.get_desktop()
+        # print(self.jsonLinkDir)
+        print(desktop)
+        f = open(desktop + '/download.txt', 'w')
+        f.close()
+        f = open(desktop + '/download.txt', 'a')
+        for i in range(1, self.episodeNum+1):
+            time.sleep(1)
+            lk = CrawlUtil.getPlayLink(self.jsonLinkDir[i])
+            self.safeLog('获取【{}】'.format(self.episodeDir[i]))
+            s = '{}@{}'.format(self.episodeDir[i], lk)
+            f.write(s + '\n')
+            # print(s)
+            pass
+        f.close()
+        self.safeLog('抓取所有链接完成！！')
+        self.safeLog('已保存至：' + desktop + '/download.txt')
         pass

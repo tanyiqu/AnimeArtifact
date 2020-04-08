@@ -10,7 +10,6 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtWebEngineWidgets import QWebEngineView
 
-
 class Ui_mainForm(object):
     def setupUi(self, mainForm):
         mainForm.setObjectName("mainForm")
@@ -77,6 +76,7 @@ class Ui_mainForm(object):
         self.gridLayout_3.setSpacing(0)
         self.gridLayout_3.setObjectName("gridLayout_3")
         self.btnGetAllLinks = QtWidgets.QPushButton(self.widgetTools)
+        self.btnGetAllLinks.setEnabled(False)
         self.btnGetAllLinks.setMinimumSize(QtCore.QSize(0, 30))
         self.btnGetAllLinks.setMaximumSize(QtCore.QSize(16777215, 30))
         self.btnGetAllLinks.setObjectName("btnGetAllLinks")
@@ -90,6 +90,7 @@ class Ui_mainForm(object):
         self.lblLastPlayEpisodeName.setObjectName("lblLastPlayEpisodeName")
         self.gridLayout_3.addWidget(self.lblLastPlayEpisodeName, 0, 5, 1, 1)
         self.lblSpace02 = QtWidgets.QLabel(self.widgetTools)
+        self.lblSpace02.setText("")
         self.lblSpace02.setObjectName("lblSpace02")
         self.gridLayout_3.addWidget(self.lblSpace02, 0, 8, 1, 1)
         self.lblLastPlay = QtWidgets.QLabel(self.widgetTools)
@@ -127,8 +128,7 @@ class Ui_mainForm(object):
         self.btnGetAllLinks.setText(_translate("mainForm", "抓取链接"))
         self.btnOpenSource.setText(_translate("mainForm", "项目地址"))
         self.lblLastPlayEpisodeName.setText(_translate("mainForm", "无"))
-        self.lblSpace02.setText(_translate("mainForm", " "))
         self.lblLastPlay.setText(_translate("mainForm", "最近一次播放："))
         self.btnAbout.setText(_translate("mainForm", "关于"))
         self.lblLastPlayEpisodeNum.setText(_translate("mainForm", "第0集"))
-        self.lblSpace01.setText(_translate("mainForm", "："))
+        self.lblSpace01.setText(_translate("mainForm", " "))

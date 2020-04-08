@@ -214,6 +214,9 @@ p, li { white-space: pre-wrap; }
       </property>
       <item row="0" column="0">
        <widget class="QPushButton" name="btnGetAllLinks">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
         <property name="minimumSize">
          <size>
           <width>0</width>
@@ -263,7 +266,7 @@ p, li { white-space: pre-wrap; }
       <item row="0" column="8">
        <widget class="QLabel" name="lblSpace02">
         <property name="text">
-         <string> </string>
+         <string/>
         </property>
        </widget>
       </item>
@@ -316,7 +319,7 @@ p, li { white-space: pre-wrap; }
       <item row="0" column="6">
        <widget class="QLabel" name="lblSpace01">
         <property name="text">
-         <string>：</string>
+         <string> </string>
         </property>
        </widget>
       </item>
