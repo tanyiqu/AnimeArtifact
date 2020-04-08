@@ -7,6 +7,7 @@ import win32clipboard as wc
 import re
 from PyQt5.QtCore import QUrl
 from PyQt5.QtGui import QTextCursor
+from PyQt5.QtWidgets import QMessageBox
 
 import R
 from Utils import TextUtil, CrawlUtil, VideoUtil
@@ -75,6 +76,12 @@ class MainForm(Ui_mainForm):
         self.console_secondary.setTextCursor(cursor)
         pass
 
+    @staticmethod
+    def showWarning(msg):
+        w = QMessageBox()
+        w.warning(None, '警告', msg, QMessageBox.Ok)
+        pass
+
     def url_changed(self):
         # 如果是返回来的话直接不处理了
         if self.isBack:
@@ -111,7 +118,7 @@ class MainForm(Ui_mainForm):
                 t.start()
                 pass
             else:
-                self.safeLog('现在还未获取完成！')
+                self.showWarning('亲的手速太快了\n现在还没有完成获取番剧信息！请耐心等待！')
                 pass
             self.isBack = True
             self.browser.back()
@@ -167,6 +174,7 @@ class MainForm(Ui_mainForm):
         # self.safeLog('正在访问：【{}】 总集数：{}'.format(self.episodeName, self.episodeNum))
         self.safeLog('【提示】可以爬取此页面所有下载链接！！请点击【抓取链接】按钮进行此操作！！')
         self.safeLog('番剧获取完毕!')
+
         self.already = True
         pass
 
