@@ -115,19 +115,29 @@ def getJsonLinkDir(jsSrc, num):
         print(suffixes)
         # 优先用这种形式的后缀
         # 1. '1097_5382ce5f262e4ddbaab3c61fa73cdbbb'
-        # 2. 'http://www.iqiyi.com/v_19rrfezjdw.html
-        # 3. 其他
-        # 4. 无后缀
+        # 2. 'https://gss3.baidu.com/6LZ0ej3k1Qd3ote6lo7D0j9wehsv/tieba-smallvideo/34_31fead7c2286d7eae4de89bfd9326f7b.mp4'
+        # 3. 'http://www.iqiyi.com/v_19rrfezjdw.html
+        # 4. 'xxxxx.m3u8'
+        # 5. 无后缀
         suffix = ''
         if len(suffixes) == 0:
+            print('取：空')
             jsonLinkDir.update({i: ''})
             continue
         for s in suffixes:
+            # 如果是第一种：37位并且中间有个‘_’
             if len(s) == 37 and s[4] == '_':
                 suffix = s
+                print('取：', s)
+                break
+            # 第二种：结尾是“.mp4”
+            elif s[-4:] == '.mp4':
+                suffix = s
+                print('取：', s)
                 break
         if suffix == '':
             suffix = suffixes[0]
+            print('取：', suffixes[0])
 
         jsonLink = 'http://test.1yltao.com/testapi888.php?time={}&url={}'.format(int(time.time()), suffix)
         # print(i, jsonLink)
@@ -136,6 +146,11 @@ def getJsonLinkDir(jsSrc, num):
 
 
 def getPlayLink(jsonLink):
+    """
+    获取真实的播放链接
+    :param jsonLink: json文件url
+    :return: None
+    """
     # time.sleep(1)
     # print('jsonLink：' + jsonLink)
     temp_url = re.findall('url=(.*?)', jsonLink)[0]
