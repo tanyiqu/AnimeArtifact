@@ -143,7 +143,12 @@ def getJsonLinkDir(jsSrc, num):
                 suffix = s
                 print('取：', s)
                 break
-        # 筛选m3u8的
+        # 如果已经获取了最优的suffix，进入下一次循环
+        if suffix:
+            jsonLink = 'http://test.1yltao.com/testapi888.php?time={}&url={}'.format(int(time.time()), suffix)
+            jsonLinkDir.update({i: jsonLink})
+            continue
+        # 否则，匹配m3u8链接
         for s in suffixes:
             # 剔除不太好的m3u8链接
             if s[0:13] == 'https://www6.' or s[0:12] == 'http://www6.':
