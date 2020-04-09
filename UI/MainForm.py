@@ -7,11 +7,12 @@ import win32clipboard as wc
 import re
 from PyQt5.QtCore import QUrl
 from PyQt5.QtGui import QTextCursor
-from PyQt5.QtWidgets import QMessageBox
+from PyQt5.QtWidgets import QMessageBox, QWidget
 
 import R
 from Utils import TextUtil, CrawlUtil, VideoUtil
 from UI.UI_MainForm import Ui_mainForm
+from UI.AboutForm import AboutForm
 
 
 class MainForm(Ui_mainForm):
@@ -19,7 +20,7 @@ class MainForm(Ui_mainForm):
     继承由pyuic生成的Form
     在此文件里写信号槽
     """
-
+    aboutWidget = None
     HtmlSrc = ''            # 番剧html的源码
     episodeName = '番名'    # 番名
     episodeNum = 10         # 总集数
@@ -46,6 +47,8 @@ class MainForm(Ui_mainForm):
         self.btnGetAllLinks.clicked.connect(self.btnGetAllLinks_clicked)
         # 项目地址
         self.btnOpenSource.clicked.connect(lambda: webbrowser.open_new(R.string.OPEN_SOURCE))
+        # 关于
+        self.btnAbout.clicked.connect(self.btnAbout_clicked)
         pass
 
     def log(self, msg, showTime=True):
@@ -229,6 +232,16 @@ class MainForm(Ui_mainForm):
         wc.SetClipboardData(win32con.CF_UNICODETEXT, url)
         wc.CloseClipboard()
         pass
+
+    def btnAbout_clicked(self):
+        print('点击关于')
+        ui = AboutForm()
+        self.aboutWidget = QWidget()
+        ui.setupUi(self.aboutWidget)
+        ui.init()
+        self.aboutWidget.show()
+        pass
+
 
     def btnGetAllLinks_clicked(self):
         t = threading.Thread(target=self._getAllLinks, name='getAllLinks')
