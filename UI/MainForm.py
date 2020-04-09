@@ -23,10 +23,10 @@ class MainForm(Ui_mainForm):
     HtmlSrc = ''            # 番剧html的源码
     episodeName = '番名'    # 番名
     episodeNum = 10         # 总集数
-    episodeDir = {}         # 第几集:集数名
+    episodeDir = {}         # {第几集:集数名} 例如： {1: '第1集'}
     episodePath = '/acg/2130/'    # 番剧编号
     jsSrc = ''              # 番剧js源码
-    jsonLinkDir = {}        # 字典：{第几集 : json文件链接}
+    jsonLinkDir = {}        # 字典：{第几集 : json文件链接} 例如：{1: 'http://test.1yltao.com/testapi888.php?time=1586398456&url=1006_61136653f7514b4d9f5c8e828067dbbb'}
     already = False
     isBack = False
 
@@ -159,7 +159,19 @@ class MainForm(Ui_mainForm):
         # 获取总集数
         self.episodeNum = len(self.episodeDir)
         self.safeLog('总集数：{}'.format(self.episodeNum))
-
+        # 格式化集数名 '第1集' --> '第01集' 或 '第001集' 根据集数设置位数
+        n = TextUtil.getIntegerDigits(self.episodeNum)
+        f = '第%0{}d集'.format(n)
+        for i in range(1, self.episodeNum+1):
+            episode = self.episodeDir[i]
+            if re.match('第(.*?)集', episode):
+                num = re.findall('第(.*?)集', episode)[0]
+                # 看下num是不是整数
+                if re.match(r'\d *', num):
+                    episode = f % int(num)
+                    self.episodeDir.update({i: episode})
+            pass
+        # print(self.episodeDir)
         # 如果集数过多，就打印进度信息
         if self.episodeNum > 20:
             self.safeLog('当前番剧集数过多！请耐心等待！')
