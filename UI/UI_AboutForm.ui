@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>387</width>
-    <height>442</height>
+    <width>341</width>
+    <height>388</height>
    </rect>
   </property>
   <property name="minimumSize">
@@ -127,11 +127,53 @@
     <bool>true</bool>
    </property>
   </widget>
-  <widget class="QLabel" name="gif">
+  <widget class="QLabel" name="gif_1">
    <property name="geometry">
     <rect>
      <x>0</x>
-     <y>340</y>
+     <y>290</y>
+     <width>100</width>
+     <height>100</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+  </widget>
+  <widget class="QPlainTextEdit" name="content">
+   <property name="geometry">
+    <rect>
+     <x>20</x>
+     <y>110</y>
+     <width>301</width>
+     <height>180</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">font: 10pt &quot;微软雅黑&quot;;</string>
+   </property>
+   <property name="readOnly">
+    <bool>true</bool>
+   </property>
+   <property name="plainText">
+    <string>看番神器是由Tanyiqu于2020年4月7日开始独立开发（算不上开发）的一款看动漫的工具软件。
+软件开源并且完全免费！实际上也没有任何收费的理由。
+软件使用python的爬虫对目标网站进行资源爬取,本人不参与任何上传操作。
+请勿将此工具用于任何非法用途！!
+请勿将此工具用于任何非法用途！!
+请勿将此工具用于任何非法用途！!
+软件的保质期受目标网站的影响，如果目标网站挂掉了可以向我提供更好的网站，我可能会保证此软件的再次使用。
+
+额外感谢：
+● 软件图标：https://www.iconfont.cn/collections/detail?cid=21867
+● 其他：...</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="gif_2">
+   <property name="geometry">
+    <rect>
+     <x>240</x>
+     <y>290</y>
      <width>100</width>
      <height>100</height>
     </rect>

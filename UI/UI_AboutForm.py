@@ -13,7 +13,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 class Ui_AboutForm(object):
     def setupUi(self, AboutForm):
         AboutForm.setObjectName("AboutForm")
-        AboutForm.resize(387, 442)
+        AboutForm.resize(341, 388)
         AboutForm.setMinimumSize(QtCore.QSize(0, 0))
         AboutForm.setMaximumSize(QtCore.QSize(450, 450))
         AboutForm.setStyleSheet("background-color: rgb(255, 255, 255);")
@@ -43,10 +43,19 @@ class Ui_AboutForm(object):
         self.lblAuthor.setStyleSheet("font: 10pt \"微软雅黑\";")
         self.lblAuthor.setOpenExternalLinks(True)
         self.lblAuthor.setObjectName("lblAuthor")
-        self.gif = QtWidgets.QLabel(AboutForm)
-        self.gif.setGeometry(QtCore.QRect(0, 340, 100, 100))
-        self.gif.setText("")
-        self.gif.setObjectName("gif")
+        self.gif_1 = QtWidgets.QLabel(AboutForm)
+        self.gif_1.setGeometry(QtCore.QRect(0, 290, 100, 100))
+        self.gif_1.setText("")
+        self.gif_1.setObjectName("gif_1")
+        self.content = QtWidgets.QPlainTextEdit(AboutForm)
+        self.content.setGeometry(QtCore.QRect(20, 110, 301, 180))
+        self.content.setStyleSheet("font: 10pt \"微软雅黑\";")
+        self.content.setReadOnly(True)
+        self.content.setObjectName("content")
+        self.gif_2 = QtWidgets.QLabel(AboutForm)
+        self.gif_2.setGeometry(QtCore.QRect(240, 290, 100, 100))
+        self.gif_2.setText("")
+        self.gif_2.setObjectName("gif_2")
 
         self.retranslateUi(AboutForm)
         QtCore.QMetaObject.connectSlotsByName(AboutForm)
@@ -59,3 +68,14 @@ class Ui_AboutForm(object):
         self.lblAuthor_.setText(_translate("AboutForm", "作者"))
         self.lblVersion.setText(_translate("AboutForm", "1.0 (2020.4.9)"))
         self.lblAuthor.setText(_translate("AboutForm", "<a href=https://tanyiqu.github.io>Tanyiqu"))
+        self.content.setPlainText(_translate("AboutForm", "看番神器是由Tanyiqu于2020年4月7日开始独立开发（算不上开发）的一款看动漫的工具软件。\n"
+"软件开源并且完全免费！实际上也没有任何收费的理由。\n"
+"软件使用python的爬虫对目标网站进行资源爬取,本人不参与任何上传操作。\n"
+"请勿将此工具用于任何非法用途！!\n"
+"请勿将此工具用于任何非法用途！!\n"
+"请勿将此工具用于任何非法用途！!\n"
+"软件的保质期受目标网站的影响，如果目标网站挂掉了可以向我提供更好的网站，我可能会保证此软件的再次使用。\n"
+"\n"
+"额外感谢：\n"
+"● 软件图标：https://www.iconfont.cn/collections/detail?cid=21867\n"
+"● 其他：..."))

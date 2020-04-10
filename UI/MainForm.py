@@ -227,7 +227,7 @@ class MainForm(Ui_mainForm):
         if lk[-5:].lower() == '.m3u8':
             self.safeLog('暂时不播放m3u8视频，以后会进行适配！！', showTime=False)
             self.safeLog('暂时先在浏览器中凑活着看！！', showTime=False)
-            broswerLk = 'https://www.m3u8play.com/?play={}'.format(lk)
+            broswerLk = (R.string.M3U8_API + '{}').format(lk)
             print(broswerLk)
             webbrowser.open_new(broswerLk)
             return
