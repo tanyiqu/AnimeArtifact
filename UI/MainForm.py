@@ -5,6 +5,8 @@ import webbrowser
 import win32con
 import win32clipboard as wc
 import re
+
+from PyQt5 import QtGui
 from PyQt5.QtCore import QUrl
 from PyQt5.QtGui import QTextCursor
 from PyQt5.QtWidgets import QMessageBox, QWidget
@@ -21,17 +23,24 @@ class MainForm(Ui_mainForm):
     在此文件里写信号槽
     """
     aboutWidget = None
-    HtmlSrc = ''            # 番剧html的源码
-    episodeName = '番名'    # 番名
-    episodeNum = 10         # 总集数
-    episodeDir = {}         # {第几集:集数名} 例如： {1: '第1集'}
-    episodePath = '/acg/2130/'    # 番剧编号
-    jsSrc = ''              # 番剧js源码
-    jsonLinkDir = {}        # 字典：{第几集 : json文件链接} 例如：{1: 'http://test.1yltao.com/testapi888.php?time=1586398456&url=1006_61136653f7514b4d9f5c8e828067dbbb'}
+    HtmlSrc = ''  # 番剧html的源码
+    episodeName = '番名'  # 番名
+    episodeNum = 10  # 总集数
+    episodeDir = {}  # {第几集:集数名} 例如： {1: '第1集'}
+    episodePath = '/acg/2130/'  # 番剧编号
+    jsSrc = ''  # 番剧js源码
+    jsonLinkDir = {}  # 字典：{第几集 : json文件链接} 例如：{1: 'http://test.1yltao.com/testapi888.php?time=1586398456&url=1006_61136653f7514b4d9f5c8e828067dbbb'}
     already = False
     isBack = False
 
-    def init(self):
+    def init(self, mainForm):
+        # 标题
+        mainForm.setWindowTitle(R.string.APP_NAME + ' ' + R.string.VERSION)
+        # 图标
+        icon = QtGui.QIcon()
+        icon.addPixmap(QtGui.QPixmap("resource/images/logo.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        mainForm.setWindowIcon(icon)
+        # 其他
         self.log(R.string.WELCOME, showTime=False)
         self.log(R.string.TIPS, showTime=False)
         # web
@@ -109,8 +118,8 @@ class MainForm(Ui_mainForm):
         # 第二种：
         # http://susudm.com/acg/2130/1.html
         # http://fcdm.in/acg/2130/1.html        出现这种形式的链接 为可以调用potplayer播放的
-        reg1 = r'http://.*?/.*?/([1-9]\d*)/$'           # 匹配第一种
-        reg2 = r'http://.*?/.*?/[1-9]\d*/(.*?).html$'   # 匹配第二种
+        reg1 = r'http://.*?/.*?/([1-9]\d*)/$'  # 匹配第一种
+        reg2 = r'http://.*?/.*?/[1-9]\d*/(.*?).html$'  # 匹配第二种
         if re.match(reg1, currUrl):
             # 每当进入此类链接，already置为False
             self.already = False
@@ -165,7 +174,7 @@ class MainForm(Ui_mainForm):
         # 格式化集数名 '第1集' --> '第01集' 或 '第001集' 根据集数设置位数
         n = TextUtil.getIntegerDigits(self.episodeNum)
         f = '第%0{}d集'.format(n)
-        for i in range(1, self.episodeNum+1):
+        for i in range(1, self.episodeNum + 1):
             episode = self.episodeDir[i]
             if re.match('第(.*?)集', episode):
                 num = re.findall('第(.*?)集', episode)[0]
@@ -238,10 +247,9 @@ class MainForm(Ui_mainForm):
         ui = AboutForm()
         self.aboutWidget = QWidget()
         ui.setupUi(self.aboutWidget)
-        ui.init()
+        ui.init(self.aboutWidget)
         self.aboutWidget.show()
         pass
-
 
     def btnGetAllLinks_clicked(self):
         t = threading.Thread(target=self._getAllLinks, name='getAllLinks')
@@ -258,7 +266,7 @@ class MainForm(Ui_mainForm):
         f = open(desktop + '/download.txt', 'w')
         f.close()
         f = open(desktop + '/download.txt', 'a')
-        for i in range(1, self.episodeNum+1):
+        for i in range(1, self.episodeNum + 1):
             time.sleep(1)
             lk = CrawlUtil.getPlayLink(self.jsonLinkDir[i])
             self.safeLog('获取【{}】'.format(self.episodeDir[i]))

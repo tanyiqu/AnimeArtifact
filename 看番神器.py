@@ -7,6 +7,6 @@ if __name__ == '__main__':
     ui = MainForm()
     widget = QWidget()
     ui.setupUi(widget)
-    ui.init()
+    ui.init(widget)
     widget.show()
     sys.exit(app.exec_())
